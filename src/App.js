@@ -1,5 +1,6 @@
-import React from 'react';
-import './App.css';
+import React, {useState, useEffect} from 'react';
+
+
 
 const api = {
   key: "6159c5f09c63f65e38e8bcbb9084c619",
@@ -8,8 +9,16 @@ const api = {
 
 function App() {
   return (
-    <div>
-      Weather
+    <div className='app'>
+      <main>
+        <div className='search-box'>
+          <input 
+            type="text"
+            className="search-bar"
+            placeholder="Search"
+          />
+        </div>
+      </main>
     </div>
   );
 }
