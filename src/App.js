@@ -1,11 +1,22 @@
 import React, {useState, useEffect} from 'react';
-
-const api = {
-  key: "6159c5f09c63f65e38e8bcbb9084c619",
-  base:  "https://api.openweathermap.org/data/2.5/"
-}
+import axios from 'axios';
 
 function App() {
+
+  const [weather, setWeather] = useState([]);
+  
+
+  const fetchData = async () => {
+    const { data } = await axios.get('http://api.weatherapi.com/v1/current.json?key=a477e41344f24cd49d9211308211412&q=London&aqi=no'
+    )
+    console.log(data)
+    setWeather(data)
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
 
   const dateBuilder = (d) => {
     let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -20,6 +31,7 @@ function App() {
   }
 
 
+
   return (
     <div className='app'>
       <main>
@@ -31,15 +43,15 @@ function App() {
           />
         </div>
         <div className='location-box'>
-          <div className='location'>London, England</div>
+          <div className='location'>{weather.location.name}</div>
           <div className='date'>{dateBuilder((new Date()))}</div>
         </div>
         <div className='weather-box'>
           <div className='temp'>
-            9°C
+            {weather.current.temp_c}°C
           </div>
           <div className='descr'>
-            Freeze
+            {weather.current.condition.text}
           </div>
         </div>
       </main>
