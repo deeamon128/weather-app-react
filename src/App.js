@@ -7,7 +7,7 @@ function App() {
   
 
   const fetchData = async () => {
-    const { data } = await axios.get('http://api.weatherapi.com/v1/current.json?key=a477e41344f24cd49d9211308211412&q=London&aqi=no'
+    const { data } = await axios.get(`http://api.weatherapi.com/v1/current.json?key=${process.env.REACT_APP_API_KEY}&q=London&aqi=no`
     )
     console.log(data)
     setWeather(data)
@@ -33,7 +33,7 @@ function App() {
 
 
   return (
-    <div className='app'>
+    <div className={weather.current.temp_c > 16 ? "app-warm" : "app"}>
       <main>
         <div className='search-box'>
           <input 
@@ -43,7 +43,7 @@ function App() {
           />
         </div>
         <div className='location-box'>
-          <div className='location'>{weather.location.name}</div>
+          <div className='location'>{weather.location.name},{weather.location.country}</div>
           <div className='date'>{dateBuilder((new Date()))}</div>
         </div>
         <div className='weather-box'>
