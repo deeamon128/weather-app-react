@@ -1,62 +1,49 @@
-import React, {useState, useEffect} from 'react';
-import axios from 'axios';
+import React, {useState} from 'react';
+import './App.css';
+import { fetchWeather } from '../src/api/fetchWeather'
 
 function App() {
 
-  const [weather, setWeather] = useState([]);
-  
+  const [query, setQuery] = useState('');
+  const [weather, setWeather] = useState({});
 
-  const fetchData = async () => {
-    const { data } = await axios.get(`http://api.weatherapi.com/v1/current.json?key=${process.env.REACT_APP_API_KEY}&q=London&aqi=no`
-    )
-    console.log(data)
-    setWeather(data)
+  const search = async (e) => {
+    if(e.key === 'Enter') {
+      const data = await fetchWeather(query)
+      console.log(data)
+      setWeather(data)
+      setQuery('')
+    }
   }
-
-  useEffect(() => {
-    fetchData()
-  }, [])
-
-
-  const dateBuilder = (d) => {
-    let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-    let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-    let day = days[d.getDay()];
-    let month = months[d.getMonth()];
-    let date = d.getDate();
-    let year = d.getFullYear();
-
-    return `${day} ${date} ${month} ${year}`
-  }
-
-
 
   return (
-    <div className={weather.current.temp_c > 16 ? "app-warm" : "app"}>
-      <main>
-        <div className='search-box'>
-          <input 
-            type="text"
-            className="search-bar"
-            placeholder="Search"
-          />
-        </div>
-        <div className='location-box'>
-          <div className='location'>{weather.location.name},{weather.location.country}</div>
-          <div className='date'>{dateBuilder((new Date()))}</div>
-        </div>
-        <div className='weather-box'>
-          <div className='temp'>
-            {weather.current.temp_c}°C
+    <div className='container'>
+      <input 
+        type="text"
+        className="search"
+        placeholder="Search..."
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        onKeyPress={search}
+      />
+      {weather.main && (
+        <div className='city'>
+          <h2 className="city-name">
+            <span>{weather.name}</span>
+            <sup>{weather.sys.country}</sup>
+          </h2>
+          <div className="city-temp">
+            {Math.round(weather.main.temp)}
+            <sup>&deg;C</sup>
           </div>
-          <div className='descr'>
-            {weather.current.condition.text}
+          <div className="info">
+            <img className="city-icon" src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`} alt={weather.weather[0].description} />
+            <p>{weather.weather[0].description}</p>
           </div>
         </div>
-      </main>
+      )}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
